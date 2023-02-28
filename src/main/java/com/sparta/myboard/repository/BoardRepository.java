@@ -8,4 +8,5 @@ import java.util.List;
 public interface BoardRepository extends JpaRepository<Board, Long> {   //데이터베이스 연결!
     List<Board> findAllByOrderByCreateAtDesc(); //전체 리스트 조회
 
+
 }
