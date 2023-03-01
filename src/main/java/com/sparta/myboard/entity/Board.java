@@ -3,7 +3,6 @@ package com.sparta.myboard.entity;
 import com.sparta.myboard.dto.BoardRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -11,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 public class Board extends Timestamped{
-    @Id //PK 설정
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(nullable = false)
@@ -37,7 +36,6 @@ public class Board extends Timestamped{
     public void update(BoardRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.writer = requestDto.getWriter();
-        this.password = requestDto.getPassword();
         this.contents = requestDto.getContents();
     }
 

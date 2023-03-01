@@ -14,25 +14,10 @@ import java.util.List;
 public class BoardService {
     private final BoardRepository boardRepository;
 
-//    private final  BoardRequestDto requestDto;
-
-
-//    public BoardService(BoardRepository boardRepository) {
-//        this.boardRepository = boardRepository;
-//    }
-
-//    @Transactional
-//    public Board InsertBoard(String title, String writer, String password, String contents) {
-//        BoardRequestDto requestDto = new BoardRequestDto(title, writer, password, contents);
-//        Board board = new Board(requestDto);
-//        boardRepository.save(board);
-//        return board;
-//    }
     @Transactional
-    public Board insertBoard (BoardRequestDto requestDto) {
+    public Board insertBoard(BoardRequestDto requestDto) {
         Board board = new Board(requestDto);
-        boardRepository.save(board);
-        return board;
+        return boardRepository.save(board);
     }
 
     @Transactional(readOnly = true)
@@ -42,64 +27,35 @@ public class BoardService {
 
     @Transactional
     public Board findBoardOne(Long id) {
-
-        return boardRepository.findById(id).orElse(null);
+        return findAndCheck(id);
     }
 
     @Transactional
-    public Long updateBoard (Long id , BoardRequestDto requestDto) throws Exception {
-        Board board = boardRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다."));
-//        if(board.getPassword().equals(requestDto.getPassword())) {
-//            requestDto.setTitle(requestDto.getTitle());
-//            requestDto.setWriter(requestDto.getWriter());
-//            requestDto.setContents(requestDto.getContents());
-//        }
-        if(!board.getPassword().equals(requestDto.getPassword())) {
+    public Board updateBoard(Long id, BoardRequestDto requestDto) throws Exception {
+        Board board = findAndCheck(id);
+        if (!board.getPassword().equals(requestDto.getPassword())) {
             throw new Exception("비밀번호가 일치하지 않습니다");
+        } else {
+            board.update(requestDto);
         }
-        board.update(requestDto);
-        return board.getId();
+        return board;
 
     }
 
-//    @Transactional
-//    public Long updateBoard (Long id, String password, BoardRequestDto requestDto) {
-//        Board board = boardRepository.findById(id).orElseThrow(() ->
-//                new NullPointerException("해당 아이디가 존재하지 않습니다."));
-//        if(password.equals(board.getPassword())) {
-//            board.setId(board.getId());
-//            board.setTitle(requestDto.getTitle());
-//            board.setWriter(requestDto.getWriter());
-//            board.setPassword(board.getPassword());
-//            board.setContents(requestDto.getContents());
-//        }
-//        board.update(requestDto);
-//        return id;
-//    }
-
-//    @Transactional
-//    public String updateBoard (String password, BoardRequestDto requestDto) {
-//        Board board = boardRepository.findByPassword(password).;
-//        board.updateBoard(requestDto);
-//        return null;
-//    }
-    /*
-    데이터 삭제부분
-    비밀번호를 url로 전달하지 않아도 비교가 가능해야 함.
-    해당 게시글 비밀번호의 비교를 그러면 어떻게 할 것인가?
-    * */
     @Transactional
-    public String deleteBoard(Long id, String password) throws Exception {  //리턴을 받을 필요가 있을까..?
-        String msg = "";
-        Board board = boardRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다."));
-        if(!board.getPassword().equals(password)) {
+    public String deleteBoard(Long id, BoardRequestDto requestDto) throws Exception {
+        Board board = findAndCheck(id);
+        if (!board.getPassword().equals(requestDto.getPassword())) {
             throw new Exception("비밀번호가 일치하지 않습니다");
         } else {
             boardRepository.deleteById(id);
-            msg = "성공입니다.";
         }
-        return msg;
+        return board.getWriter() + "님의 글이 삭제 되었습니다.";
+    }
+
+
+    private Board findAndCheck(Long id) {
+        return boardRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
     }
 }
