@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@EnableJpaAuditing  //Timestamped 에 있는 @EntityListeners 를 사용하기 위해서 필요.
+@EnableJpaAuditing
 @SpringBootApplication
 public class MyBoardApplication {
 
