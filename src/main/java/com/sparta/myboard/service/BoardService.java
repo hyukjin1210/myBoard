@@ -1,6 +1,7 @@
 package com.sparta.myboard.service;
 
 import com.sparta.myboard.dto.BoardRequestDto;
+import com.sparta.myboard.dto.BoardUpdateRequestDto;
 import com.sparta.myboard.entity.Board;
 import com.sparta.myboard.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +32,12 @@ public class BoardService {
     }
 
     @Transactional
-    public Board updateBoard(Long id, BoardRequestDto requestDto) throws Exception {
+    public Board updateBoard(Long id, BoardUpdateRequestDto boardUpdateRequestDto) throws Exception {
         Board board = findAndCheck(id);
-        if (!board.getPassword().equals(requestDto.getPassword())) {
+        if (!board.getPassword().equals(boardUpdateRequestDto.getPassword())) {
             throw new Exception("비밀번호가 일치하지 않습니다");
         } else {
-            board.update(requestDto);
+            board.update(boardUpdateRequestDto);
         }
         return board;
 

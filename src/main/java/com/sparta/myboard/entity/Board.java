@@ -1,6 +1,7 @@
 package com.sparta.myboard.entity;
 
 import com.sparta.myboard.dto.BoardRequestDto;
+import com.sparta.myboard.dto.BoardUpdateRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,10 +34,10 @@ public class Board extends Timestamped{
         this.contents = requestDto.getContents();
     }
 
-    public void update(BoardRequestDto requestDto) {
-        this.title = requestDto.getTitle();
-        this.writer = requestDto.getWriter();
-        this.contents = requestDto.getContents();
+    public void update(BoardUpdateRequestDto boardUpdateRequestDto) {
+        this.title = boardUpdateRequestDto.getTitle();
+        this.writer = boardUpdateRequestDto.getWriter();
+        this.contents = boardUpdateRequestDto.getContents();
     }
 
 }
