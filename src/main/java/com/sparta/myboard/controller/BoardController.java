@@ -2,6 +2,7 @@ package com.sparta.myboard.controller;
 
 import com.sparta.myboard.dto.BoardRequestDto;
 import com.sparta.myboard.dto.BoardUpdateRequestDto;
+import com.sparta.myboard.dto.BoardCreateResponseDto;
 import com.sparta.myboard.entity.Board;
 import com.sparta.myboard.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -21,28 +22,27 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
 
-    @PostMapping("/insertBoard")
-    public String insertBoard(@Valid @RequestBody BoardRequestDto requestDto, BindingResult result) {
-        if (result.hasErrors()) {
-            return result.getFieldErrors().toString();
-        } else {
-            boardService.insertBoard(requestDto);
-            return "유효성 검증에서 통과하였습니다";
-        }
-    }
 //    @PostMapping("/insertBoard")
-//    public Board insertBoard(@Valid @RequestBody BoardRequestDto requestDto, BindingResult result) {
-//        log.info("request: {}", result.getFieldErrors());
-//            return boardService.insertBoard(requestDto);
+//    public String insertBoard(@Valid @RequestBody BoardRequestDto requestDto, BindingResult result) {
+//        if (result.hasErrors()) {
+//            return result.getFieldErrors().toString();
+//        } else {
+//            boardService.insertBoard(requestDto);
+//            return "유효성 검증에서 통과하였습니다";
+//        }
 //    }
+    @PostMapping("/insertBoard")
+    public BoardCreateResponseDto insertBoard(@Valid @RequestBody BoardRequestDto requestDto) {
+            return  boardService.insertBoard(requestDto);
+        }
 
     @GetMapping("/BoardListAll")
-    public List<Board> BoardListAll() {
+    public List<BoardCreateResponseDto> BoardListAll() {
         return boardService.getBoardListAll();
     }
 
     @GetMapping("/findBoardOne/")
-    public Board findBoardOne(@RequestParam Long id) {
+    public BoardCreateResponseDto findBoardOne(@RequestParam Long id) {
         return boardService.findBoardOne(id);
     }
 
