@@ -2,12 +2,14 @@ package com.sparta.myboard.service;
 
 import com.sparta.myboard.dto.BoardRequestDto;
 import com.sparta.myboard.dto.BoardUpdateRequestDto;
+import com.sparta.myboard.dto.BoardCreateResponseDto;
 import com.sparta.myboard.entity.Board;
 import com.sparta.myboard.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,20 +18,33 @@ public class BoardService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public Board insertBoard(BoardRequestDto requestDto) {
+    public BoardCreateResponseDto insertBoard(BoardRequestDto requestDto) {
         Board board = new Board(requestDto);
-        return boardRepository.save(board);
+        boardRepository.save(board);
+        return new BoardCreateResponseDto(board);
     }
 
     @Transactional(readOnly = true)
-    public List<Board> getBoardListAll() {
-        return boardRepository.findAllByOrderByCreateAtDesc();
+    public List<BoardCreateResponseDto> getBoardListAll() {
+        List<Board> boardlist = boardRepository.findAllByOrderByCreateAtDesc(); //그냥 리스트
+        List<BoardCreateResponseDto> list2 = new ArrayList<>();
+
+        for (Board board  : boardlist) {
+            BoardCreateResponseDto createResponseDto = new BoardCreateResponseDto(board);
+            list2.add(createResponseDto);
+        }
+        return list2;
     }
 
     @Transactional
-    public Board findBoardOne(Long id) {
-        return findAndCheck(id);
+    public BoardCreateResponseDto findBoardOne(Long id) {
+        return new BoardCreateResponseDto(boardRepository.findById(id).orElseThrow(
+                () -> new NullPointerException("회원 상세 조회 실패")));
     }
+//    @Transactional
+//    public Board findBoardOne(Long id) {
+//        return findAndCheck(id);
+//    }
 
     @Transactional
     public Board updateBoard(Long id, BoardUpdateRequestDto boardUpdateRequestDto) throws Exception {
