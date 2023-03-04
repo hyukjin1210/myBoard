@@ -6,14 +6,16 @@ import lombok.Getter;
 @Getter
 public class MemberResponseDto {
     private Long id;
-    private String name;
+    private String username;
     private String email;
+    private String password;
 
 
     public MemberResponseDto(Member member) {
         this.id = member.getId();
-        this.name = member.getName();
+        this.username = member.getUsername();
         this.email = member.getEmail();
+        this.password = member.getPassword();
     }
 
 

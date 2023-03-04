@@ -1,6 +1,6 @@
 package com.sparta.myboard.entity;
 
-import com.sparta.myboard.dto.MemberRequestDto;
+import com.sparta.myboard.dto.SignUpRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,16 +14,16 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(nullable = false)
-    private String name;
+    private String username;
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)
-    private String pw;
+    private String password;
 
-    public Member(MemberRequestDto memberRequestDto) {
-        this.name = memberRequestDto.getName();
+    public Member(SignUpRequestDto memberRequestDto) {
+        this.username = memberRequestDto.getUsername();
         this.email = memberRequestDto.getEmail();
-        this.pw = memberRequestDto.getPw();
+        this.password = memberRequestDto.getPassword();
     }
 
 }
