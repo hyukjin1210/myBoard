@@ -14,31 +14,35 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Board extends Timestamped{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
-    private String writer;
+//    @Column(nullable = false)
+//    private String writer;
 
-    @Column(nullable = false)
-    private String password;
+//    @Column(nullable = false)
+//    private String password;
 
     @Column(nullable = false)
     private String contents;
 
+    @Column(nullable = false)
+    private String username;
 
-    public Board(BoardRequestDto requestDto) {
+
+    public Board(BoardRequestDto requestDto, String username) {
         this.title = requestDto.getTitle();
-        this.writer = requestDto.getWriter();
-        this.password = requestDto.getPassword();
+//        this.writer = requestDto.getWriter();
+//        this.password = requestDto.getPassword();
         this.contents = requestDto.getContents();
+        this.username = username;
     }
 
     public void update(BoardUpdateRequestDto boardUpdateRequestDto) {
         this.title = boardUpdateRequestDto.getTitle();
-        this.writer = boardUpdateRequestDto.getWriter();
+//        this.writer = boardUpdateRequestDto.getWriter();
         this.contents = boardUpdateRequestDto.getContents();
     }
 

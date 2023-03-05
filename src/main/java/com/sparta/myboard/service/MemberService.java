@@ -26,7 +26,7 @@ public class MemberService {
     public void signUp(SignUpRequestDto signUpRequestDto) {
         Optional<Member> found = memberRepository.findByUsername(signUpRequestDto.getUsername());
         if(found.isPresent()) {
-            throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
+            throw new IllegalArgumentException("중복된 아이디가 존재합니다.");
         }
         Member member = new Member(signUpRequestDto);
         memberRepository.save(member);
@@ -41,7 +41,6 @@ public class MemberService {
             throw  new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(member.getUsername(), member.getEmail()));
-//        파라미터에 Http 추가하고, jwt 토큰발급이 이루어지면 끝
     }
 
     @Transactional

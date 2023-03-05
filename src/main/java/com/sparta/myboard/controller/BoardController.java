@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -21,8 +22,8 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping("/insertBoard")
-    public BoardResponseDto insertBoard(@Valid @RequestBody BoardRequestDto requestDto) {
-        return boardService.insertBoard(requestDto);
+    public BoardResponseDto insertBoard(@Valid @RequestBody BoardRequestDto requestDto, HttpServletRequest request) {
+        return boardService.insertBoard(requestDto, request);
     }
 
     @GetMapping("/BoardListAll")
@@ -37,15 +38,16 @@ public class BoardController {
 
     @PutMapping("/updateBoard/{id}")
     public BoardResponseDto updateBoard(@PathVariable Long id,
-                                        @Validated @RequestBody BoardUpdateRequestDto boardUpdateRequestDto) throws Exception {
-        return boardService.updateBoard(id, boardUpdateRequestDto);
+                                        @Validated @RequestBody BoardUpdateRequestDto boardUpdateRequestDto,
+                                        HttpServletRequest request) {
+        return boardService.updateBoard(id, boardUpdateRequestDto, request);
     }
 
-    @DeleteMapping("/deleteBoard/{id}")
-    public String deleteBoard(@PathVariable Long id,
-                              @RequestBody BoardRequestDto requestDto) throws Exception {
-        return boardService.deleteBoard(id, requestDto);
-    }
+//    @DeleteMapping("/deleteBoard/{id}")
+//    public String deleteBoard(@PathVariable Long id,
+//                              @RequestBody BoardRequestDto requestDto) throws Exception {
+//        return boardService.deleteBoard(id, requestDto);
+//    }
 
 }
 
