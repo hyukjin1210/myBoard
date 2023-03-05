@@ -1,11 +1,10 @@
 package com.sparta.myboard.controller;
 
 import com.sparta.myboard.dto.LoginRequestDto;
-import com.sparta.myboard.dto.MemberLoginResponseDto;
 import com.sparta.myboard.dto.SignUpRequestDto;
 import com.sparta.myboard.dto.MemberResponseDto;
 import com.sparta.myboard.service.MemberService;
-import com.sparta.myboard.status.DefaultRes;
+import com.sparta.myboard.status.Response;
 import com.sparta.myboard.status.ResponseMessage;
 import com.sparta.myboard.status.StatusCode;
 import lombok.RequiredArgsConstructor;
@@ -29,25 +28,26 @@ public class MemberController {
     @PostMapping("/members")
     public ResponseEntity signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
         memberService.signUp(signUpRequestDto);
-        return new ResponseEntity(DefaultRes.res(StatusCode.OK,
-                ResponseMessage.CREATED_USER, signUpRequestDto), HttpStatus.OK);
+        return new ResponseEntity(new Response(StatusCode.CREATED,
+                ResponseMessage.CREATED_USER), HttpStatus.OK);
     }
 
     //로그인
     @GetMapping("/login")
-    public String login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public ResponseEntity login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         memberService.login(loginRequestDto, response);
-        return "상태코드반환 생각해라";
+        return new ResponseEntity(new Response(StatusCode.OK,
+                ResponseMessage.LOGIN_SUCCESS), HttpStatus.OK);
     }
 
     @GetMapping("/member")
     public MemberResponseDto getMemberInfo(@RequestParam Long id) {
-       return memberService.getMember(id);
+        return memberService.getMember(id);
     }
 
     @GetMapping("/members")
     public List<MemberResponseDto> getMemberList() {
-       return memberService.getMemberList();
+        return memberService.getMemberList();
     }
 
 }

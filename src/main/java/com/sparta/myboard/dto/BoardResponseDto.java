@@ -7,15 +7,19 @@ import java.time.LocalDateTime;
 
 @Getter
 public class BoardResponseDto {
+    private final Long id;
     private final String title;
-    private final String writer;
     private final String contents;
+    private final String username;
     private final LocalDateTime createAt;
+    private final LocalDateTime modifiedAt;
 
     public BoardResponseDto(Board board) {
+        this.id = board.getId();
         this.title = board.getTitle();
-        this.writer = board.getWriter();
         this.contents = board.getContents();
-        this.createAt = board.getCreateAt();
+        this.username = board.getUsername();
+        this.createAt = board.getCreatedAt();
+        this.modifiedAt = board.getModifiedAt();
     }
 }
