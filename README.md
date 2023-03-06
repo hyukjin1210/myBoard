@@ -9,5 +9,5 @@ useCase
 
 API명세서
 
-![image](https://user-images.githubusercontent.com/99636399/222036432-bc9cb92b-5c12-4fe9-a3f2-5198e68a3b64.png)
+https://documenter.getpostman.com/view/26052474/2s93JnVnCN
 
