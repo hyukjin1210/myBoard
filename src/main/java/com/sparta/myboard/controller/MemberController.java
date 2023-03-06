@@ -3,6 +3,7 @@ package com.sparta.myboard.controller;
 import com.sparta.myboard.dto.LoginRequestDto;
 import com.sparta.myboard.dto.SignUpRequestDto;
 import com.sparta.myboard.dto.MemberResponseDto;
+import com.sparta.myboard.entity.AuthEnum;
 import com.sparta.myboard.service.MemberService;
 import com.sparta.myboard.status.Response;
 import com.sparta.myboard.status.ResponseMessage;
@@ -20,12 +21,13 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/members")
 public class MemberController {
 
     private final MemberService memberService;
 
     // 회원가입
-    @PostMapping("/members")
+    @PostMapping("/signup")
     public ResponseEntity signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
         memberService.signUp(signUpRequestDto);
         return new ResponseEntity(new Response(StatusCode.CREATED,
@@ -45,7 +47,7 @@ public class MemberController {
         return memberService.getMember(id);
     }
 
-    @GetMapping("/members")
+    @GetMapping("/memberList")
     public List<MemberResponseDto> getMemberList() {
         return memberService.getMemberList();
     }
