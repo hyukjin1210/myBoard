@@ -19,11 +19,15 @@ public class Member {
     private String email;
     @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private AuthEnum auth;
 
-    public Member(SignUpRequestDto memberRequestDto) {
+    public Member(SignUpRequestDto memberRequestDto, AuthEnum auth) {
         this.username = memberRequestDto.getUsername();
         this.email = memberRequestDto.getEmail();
         this.password = memberRequestDto.getPassword();
+        this.auth = auth;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.sparta.myboard.jwt;
 
+import com.sparta.myboard.entity.AuthEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
@@ -21,7 +22,7 @@ import java.util.Date;
 public class JwtUtil {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";  //Header 값
-    public static final String AUTHORIZATION_KEY = "email";  // 사용자 권한 값의 KEY
+    public static final String AUTHORIZATION_KEY = "auth";  // 사용자 권한 값의 KEY
     public static final String BEARER_PREFIX = "Bearer ";
     private static final long TOKEN_TIME = 60 * 60 * 1000L; // 토큰 만료시간
 
@@ -46,13 +47,13 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public String createToken(String username, String email) {  //추측. 파라미터로 받은 값에 한해서만 payload 생성이 가능하다.
+    public String createToken(String username, AuthEnum auth) {  //추측. 파라미터로 받은 값에 한해서만 payload 생성이 가능하다.
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(username)
-                        .claim(AUTHORIZATION_KEY, email)
+                        .claim(AUTHORIZATION_KEY, auth)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)
@@ -80,5 +81,10 @@ public class JwtUtil {
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
+    // JWT 토큰에서 인증 정보 조회
+//    public Authentication getAuthentication(String token) {
+//        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
+//        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+//    }
 
 }
