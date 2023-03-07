@@ -8,6 +8,8 @@ import com.sparta.myboard.entity.Member;
 import com.sparta.myboard.jwt.JwtUtil;
 import com.sparta.myboard.repository.BoardRepository;
 import com.sparta.myboard.repository.MemberRepository;
+import com.sparta.myboard.status.CustomErrorCode;
+import com.sparta.myboard.status.CustomException;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,33 +24,22 @@ import java.util.List;
 public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final JwtUtil jwtUtil;
 
     @Transactional
     public BoardResponseDto createBoard(BoardRequestDto requestDto, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        if(token != null) {
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
-            }
-            Member member = memberRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("회원 아이디가 존재하지 않습니다.")
-            );
+        String username = memberService.tokenChk(request).getUsername();
 
-            Board board = boardRepository.saveAndFlush(new Board(requestDto, member.getUsername()));
-            return new BoardResponseDto(board);
-        } else {
-            return null;
-        }
+        Board board = boardRepository.saveAndFlush(new Board(requestDto, username));
+        return new BoardResponseDto(board);
+
     }
 
     @Transactional(readOnly = true)
     public BoardResponseDto getBoard(Long id) {
         return new BoardResponseDto(boardRepository.findById(id).orElseThrow(
-                () -> new NullPointerException("게시물이 존재하지 않습니다.")));
+                () -> new CustomException(CustomErrorCode.NOT_FOUND_BOARD)));
     }
 
     @Transactional(readOnly = true)
@@ -56,7 +47,7 @@ public class BoardService {
         List<Board> boardlist = boardRepository.findAllByOrderByCreatedAtDesc();
         List<BoardResponseDto> ResponseList = new ArrayList<>();
 
-        for (Board board  : boardlist) {
+        for (Board board : boardlist) {
             BoardResponseDto boardResponseDto = new BoardResponseDto(board);
             ResponseList.add(boardResponseDto);
         }
@@ -67,27 +58,16 @@ public class BoardService {
     public BoardResponseDto updateBoard(Long id, BoardUpdateRequestDto boardUpdateRequestDto,
                                         HttpServletRequest request) {
         Board board = findAndCheck(id);
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        if(token != null) {
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
-            }
-            Member member = memberRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("회원 아이디가 존재하지 않습니다.")
-            );
 
-            if (board.getUsername().equals(member.getUsername())) {
-                board.update(boardUpdateRequestDto);
-                return new BoardResponseDto(board);
-            } else {
-                throw new IllegalArgumentException("로그인이 필요한 기능입니다.");
-            }
+        String username = memberService.tokenChk(request).getUsername();
+
+        if (board.getUsername().equals(username)) {
+            board.update(boardUpdateRequestDto);
+
+            return new BoardResponseDto(board);
 
         } else {
-            return null;
+            throw new CustomException(CustomErrorCode.REQUIRED_LOGIN);
         }
 
     }
@@ -95,42 +75,21 @@ public class BoardService {
     @Transactional
     public void deleteBoard(Long id, HttpServletRequest request) {
         Board board = findAndCheck(id);
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        if(token != null) {
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
-            }
-            Member member = memberRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("회원 아이디가 존재하지 않습니다.")
-            );
 
-            if (board.getUsername().equals(member.getUsername())) {
-                boardRepository.deleteById(id);
-            } else {
-                throw new IllegalArgumentException("로그인이 필요한 기능입니다.");
-            }
+        String username = memberService.tokenChk(request).getUsername();
 
+        if (board.getUsername().equals(username)) {
+
+            boardRepository.deleteById(id);
+
+        } else {
+            throw new CustomException(CustomErrorCode.REQUIRED_LOGIN);
         }
     }
-
 
     private Board findAndCheck(Long id) {
         return boardRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
-    }
-
-    private boolean tokenChk(HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        if (jwtUtil.validateToken(token)) {
-            claims = jwtUtil.getUserInfoFromToken(token);
-        } else {
-            throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
-        }
-        return true;
+                () -> new CustomException(CustomErrorCode.NOT_FOUND_BOARD));
     }
 
 }
