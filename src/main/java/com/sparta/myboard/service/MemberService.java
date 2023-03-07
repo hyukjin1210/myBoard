@@ -7,10 +7,14 @@ import com.sparta.myboard.entity.AuthEnum;
 import com.sparta.myboard.entity.Member;
 import com.sparta.myboard.jwt.JwtUtil;
 import com.sparta.myboard.repository.MemberRepository;
+import com.sparta.myboard.status.CustomErrorCode;
+import com.sparta.myboard.status.CustomException;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +31,7 @@ public class MemberService {
     public void signUp(SignUpRequestDto signUpRequestDto) {
         Optional<Member> found = memberRepository.findByUsername(signUpRequestDto.getUsername());
         if (found.isPresent()) {
-            throw new IllegalArgumentException("중복된 아이디가 존재합니다.");  //수정4번
+            throw new CustomException(CustomErrorCode.ALREADY_USED_ID);  //수정4번
         }
 
         AuthEnum auth = AuthEnum.USER;
@@ -39,16 +43,16 @@ public class MemberService {
             }
         }
         Member member = new Member(signUpRequestDto, auth);
-        memberRepository.save(member);
-        new MemberResponseDto(member);
+        Member save = memberRepository.save(member);
+        new MemberResponseDto(save);
     }
 
     @Transactional(readOnly = true)
     public void login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         Member member = memberRepository.findByUsername(loginRequestDto.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("등록된 아이디가 없습니다."));
+                () -> new CustomException(CustomErrorCode.NOT_FOUND_MEMBER));
         if (!member.getPassword().equals(loginRequestDto.getPassword())) {
-            throw  new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw  new CustomException(CustomErrorCode.NOT_MATCHED_PASSWORD);
         }
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(member.getUsername(), member.getAuth()));
     }
@@ -56,7 +60,7 @@ public class MemberService {
     @Transactional
     public MemberResponseDto getMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(
-                () -> new NullPointerException("회원정보가 없습니다."));
+                () -> new CustomException(CustomErrorCode.NOT_FOUND_MEMBER));
         return new MemberResponseDto(member);
 
     }
@@ -64,9 +68,21 @@ public class MemberService {
     @Transactional
     public List<MemberResponseDto> getMemberList() {
         List<Member> members = memberRepository.findAll();
-//        List<MemberResponseDto> membersList = new ArrayList<>();
 
         return members.stream()
                 .map(member -> new MemberResponseDto(member)).toList();
+    }
+
+    public Member tokenChk(HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+
+        if (token == null || !jwtUtil.validateToken(token)) {
+            throw new CustomException(CustomErrorCode.NOT_VALID_TOKEN);
+        }
+
+        Claims claims = jwtUtil.getUserInfoFromToken(token);
+
+        return memberRepository.findByUsername(claims.getSubject()).orElseThrow(
+                () -> new CustomException(CustomErrorCode.NOT_FOUND_MEMBER));
     }
 }

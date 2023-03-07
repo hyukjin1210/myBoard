@@ -52,7 +52,7 @@ public class BoardController {
     public ResponseEntity deleteBoard(@PathVariable Long id, HttpServletRequest request) {
         boardService.deleteBoard(id, request);
         return new ResponseEntity(new Response(StatusCode.OK,
-                ResponseMessage.BOARD_DELETE), HttpStatus.OK);
+                ResponseMessage.DELETE_BOARD), HttpStatus.OK);
     }
 
 }

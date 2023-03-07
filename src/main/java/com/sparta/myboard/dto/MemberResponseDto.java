@@ -18,5 +18,4 @@ public class MemberResponseDto {
         this.password = member.getPassword();
     }
 
-
 }
