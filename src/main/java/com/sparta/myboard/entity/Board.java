@@ -33,15 +33,26 @@ public class Board extends Timestamped{
     @Column(nullable = false)
     private String username;
 
-//    @ManyToOne
-//    @JoinColumn(name="MEMBER_ID")
-//    private Member member;
+    // Board 와 Member 의 관계 = N : 1
+    @ManyToOne
+    @JoinColumn(name="MEMBER_ID")   //이게 FK의 역할
+    private Member member;  // id 1개가 저장되는 것이다.
+
+//    public void setMember (Member member) {
+//        this.member = member;
+//    }
 
 
-    public Board(BoardRequestDto requestDto, String username) {
+//    public Board(BoardRequestDto requestDto, String username) {
+//        this.title = requestDto.getTitle();
+//        this.contents = requestDto.getContents();
+//        this.username = username;
+//    }
+
+    public Board(BoardRequestDto requestDto, Member member) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
-        this.username = username;
+        this.member = member;
     }
 
     public void update(BoardUpdateRequestDto boardUpdateRequestDto) {

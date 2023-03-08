@@ -27,13 +27,26 @@ public class BoardService {
     private final MemberService memberService;
     private final JwtUtil jwtUtil;
 
-    @Transactional
+//    @Transactional    //조인컬럼을 사용하지 않는경우
+//    public BoardResponseDto createBoard(BoardRequestDto requestDto, HttpServletRequest request) {
+//        String username = memberService.tokenChk(request).getUsername();
+//
+//        Board board = new Board(requestDto, username);
+//        Board save = boardRepository.saveAndFlush(board);
+//
+//        return new BoardResponseDto(save);
+//    }
+
+    @Transactional  //조인컬럼을 사용하는 경우
     public BoardResponseDto createBoard(BoardRequestDto requestDto, HttpServletRequest request) {
         String username = memberService.tokenChk(request).getUsername();
+        Member member = new Member();
+//        List<Board> members = member.getUsername();
 
-        Board board = boardRepository.saveAndFlush(new Board(requestDto, username));
-        return new BoardResponseDto(board);
+        Board board = new Board(requestDto, member);    //이건 유저네임을 어떻게 찾아야 되지
+        Board save = boardRepository.saveAndFlush(board);
 
+        return new BoardResponseDto(save);
     }
 
     @Transactional(readOnly = true)
