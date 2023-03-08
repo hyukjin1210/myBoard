@@ -28,8 +28,11 @@ public class Member {
     @Enumerated(value = EnumType.STRING)
     private AuthEnum auth;
 
-//    @OneToMany(mappedBy = member)
-//    private List<Board> boards = new ArrayList<>();
+    // Member 와 Board 의 관계 = 1 : N
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+//    @JoinColumn(name = "MEMBER_ID")   //FK
+    // 조인컬럼이 없으면 중간테이블을 jpa가 만들어서 원하는 조회가 안된다.
+    List<Board> boards = new ArrayList<>();
 
     public Member(SignUpRequestDto memberRequestDto, AuthEnum auth) {
         this.username = memberRequestDto.getUsername();
@@ -39,3 +42,8 @@ public class Member {
     }
 
 }
+/*
+mappedBy로 연관관계의 주인을 정해주어야 한다.
+데이터베이스에서는 '다'쪽이 연관관계의 주인이 된다.
+Member 테이블은 연관관계 주인인 Board 테이블의 "member" 필드에 해당한다.
+*/
