@@ -11,4 +11,5 @@ import lombok.*;
 public class CustomErrorResponseDto{
     private CustomErrorCode status;
     private String statusMessage;
+    private int statusCode;
 }
