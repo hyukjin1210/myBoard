@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -21,22 +23,17 @@ public class Board extends Timestamped{
     @Column(nullable = false)
     private String title;
 
-//    @Column(nullable = false)
-//    private String writer;
-
-//    @Column(nullable = false)
-//    private String password;
-
     @Column(nullable = false)
     private String contents;
 
-    @Column(nullable = false)
-    private String username;
 
     // Board 와 Member 의 관계 = N : 1
     @ManyToOne
     @JoinColumn(name="MEMBER_ID")   //이게 FK의 역할
     private Member member;  // id 1개가 저장되는 것이다.
+
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
+    List<Comment> comments = new ArrayList<>();
 
 //    public void setMember (Member member) {
 //        this.member = member;

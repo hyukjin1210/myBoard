@@ -25,25 +25,12 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final MemberService memberService;
-    private final JwtUtil jwtUtil;
-
-//    @Transactional    //조인컬럼을 사용하지 않는경우
-//    public BoardResponseDto createBoard(BoardRequestDto requestDto, HttpServletRequest request) {
-//        String username = memberService.tokenChk(request).getUsername();
-//
-//        Board board = new Board(requestDto, username);
-//        Board save = boardRepository.saveAndFlush(board);
-//
-//        return new BoardResponseDto(save);
-//    }
 
     @Transactional  //조인컬럼을 사용하는 경우
     public BoardResponseDto createBoard(BoardRequestDto requestDto, HttpServletRequest request) {
-        String username = memberService.tokenChk(request).getUsername();
-        Member member = new Member();
-//        List<Board> members = member.getUsername();
+        Member members = memberService.tokenChk(request);
 
-        Board board = new Board(requestDto, member);    //이건 유저네임을 어떻게 찾아야 되지
+        Board board = new Board(requestDto, members);   //ResponseDto에 해답이 있다.
         Board save = boardRepository.saveAndFlush(board);
 
         return new BoardResponseDto(save);
@@ -74,7 +61,7 @@ public class BoardService {
 
         String username = memberService.tokenChk(request).getUsername();
 
-        if (board.getUsername().equals(username)) {
+        if (board.getMember().getUsername().equals(username)) {
             board.update(boardUpdateRequestDto);
 
             return new BoardResponseDto(board);
@@ -91,7 +78,7 @@ public class BoardService {
 
         String username = memberService.tokenChk(request).getUsername();
 
-        if (board.getUsername().equals(username)) {
+        if (board.getMember().getUsername().equals(username)) {
 
             boardRepository.deleteById(id);
 
@@ -100,7 +87,7 @@ public class BoardService {
         }
     }
 
-    private Board findAndCheck(Long id) {
+    public Board findAndCheck(Long id) {
         return boardRepository.findById(id).orElseThrow(
                 () -> new CustomException(CustomErrorCode.NOT_FOUND_BOARD));
     }

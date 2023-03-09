@@ -12,12 +12,13 @@ public class CustomExceptionHandler {
     @ExceptionHandler(CustomException.class)
     public CustomErrorResponseDto handleException(CustomException e, HttpServletRequest request) {
 
-        log.error("errorCode : {}, url {}, message: {}",
-                e.getCustomErrorCode(), request.getRequestURI(), e.getDetailMessage());
+        log.error("errorCode : {}, url {}, message: {}, statusCode: {}",
+                e.getCustomErrorCode(), request.getRequestURI(), e.getDetailMessage(), e.getStatusCode());
 
         return CustomErrorResponseDto.builder()
                 .status(e.getCustomErrorCode())
                 .statusMessage(e.getDetailMessage())
+                .statusCode(e.getStatusCode())
                 .build();
     }
 }
