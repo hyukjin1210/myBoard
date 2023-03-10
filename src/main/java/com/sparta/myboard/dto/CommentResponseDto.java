@@ -13,16 +13,16 @@ public class CommentResponseDto {
     private final LocalDateTime createAt;
     private final LocalDateTime modifiedAt;
     private final String boardUsername;
-    private final String commentUsername;
+//    private final String commentUsername;
 
 
-    public CommentResponseDto(Comment comment, String username) {
+    public CommentResponseDto(Comment comment) {
         this.id = comment.getId();
         this.content = comment.getContent();
         this.createAt = comment.getCreatedAt();
         this.modifiedAt = comment.getModifiedAt();
         this.boardUsername = comment.getBoard().getMember().getUsername();
-        this.commentUsername = username;
+
 
     }
 }

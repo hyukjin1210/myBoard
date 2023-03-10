@@ -3,6 +3,7 @@ package com.sparta.myboard.service;
 import com.sparta.myboard.dto.BoardRequestDto;
 import com.sparta.myboard.dto.BoardResponseDto;
 import com.sparta.myboard.dto.BoardUpdateRequestDto;
+import com.sparta.myboard.entity.AuthEnum;
 import com.sparta.myboard.entity.Board;
 import com.sparta.myboard.entity.Member;
 import com.sparta.myboard.jwt.JwtUtil;
@@ -59,11 +60,14 @@ public class BoardService {
                                         HttpServletRequest request) {
         Board board = findAndCheck(id);
 
-        String username = memberService.tokenChk(request).getUsername();
+//        String username = memberService.tokenChk(request).getUsername();
+        Member members = memberService.tokenChk(request);
 
-        if (board.getMember().getUsername().equals(username)) {
+//        if (board.getMember().getUsername().equals(username) || board.getMember().getAuth().equals(AuthEnum.ADMIN)) {
+        if (board.getMember().getUsername().equals(members.getUsername()) || members.getAuth().equals(AuthEnum.ADMIN)) {
+            //게시물에 저장된 유저네임 = 토큰에 저장되어있는 유저네임 또는 토큰에 저장되어있는 유저의 권한 = admin인 경우
             board.update(boardUpdateRequestDto);
-
+            System.out.println(board.getMember().getUsername());
             return new BoardResponseDto(board);
 
         } else {
@@ -76,9 +80,9 @@ public class BoardService {
     public void deleteBoard(Long id, HttpServletRequest request) {
         Board board = findAndCheck(id);
 
-        String username = memberService.tokenChk(request).getUsername();
+        Member members = memberService.tokenChk(request);
 
-        if (board.getMember().getUsername().equals(username)) {
+        if (board.getMember().getUsername().equals(members.getUsername()) || members.getAuth().equals(AuthEnum.ADMIN)) {
 
             boardRepository.deleteById(id);
 

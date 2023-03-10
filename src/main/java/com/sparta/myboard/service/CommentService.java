@@ -2,6 +2,7 @@ package com.sparta.myboard.service;
 
 import com.sparta.myboard.dto.CommentRequestDto;
 import com.sparta.myboard.dto.CommentResponseDto;
+import com.sparta.myboard.entity.AuthEnum;
 import com.sparta.myboard.entity.Board;
 import com.sparta.myboard.entity.Comment;
 import com.sparta.myboard.entity.Member;
@@ -27,22 +28,22 @@ public class CommentService {
 //    private final BoardService boardService;
     @Transactional
     public CommentResponseDto createComment(CommentRequestDto requestDto, Long id, HttpServletRequest request) {
-        String username = memberService.tokenChk(request).getUsername();
-        Board boardId = findAndCheck(id);   //게시물이 있는지 탐색
+        tokenChkOnly(request);    //토큰의 유효성 검사
+        Board boardId = findAndCheck(id);   //게시물이 있는지 확인
 
         Comment comment = new Comment(requestDto, boardId); //보드의 데이터 전체 저장
         Comment save = commentRepository.save(comment);
-        return new CommentResponseDto(save, username);
+        return new CommentResponseDto(save);
     }
     @Transactional
     public CommentResponseDto updateComment(CommentRequestDto requestDto, Long id, HttpServletRequest request) {
-        String username = memberService.tokenChk(request).getUsername();
-        Board boardId = findAndCheck(id);   //게시물이 있는지 탐색
+        Member members = memberService.tokenChk(request);
+//        Board boardId = findAndCheck(id);   //게시물이 있는지 탐색
         Comment commentId = commentRepository.findById(id).orElseThrow(
                 () -> new CustomException(CustomErrorCode.NOT_FOUND_COMMENT)); //댓글 없음 에러
-        if(commentId.getBoard().getMember().getUsername().equals(username)) {
+        if(commentId.getBoard().getMember().getUsername().equals(members.getUsername()) || members.getAuth().equals(AuthEnum.ADMIN)) {
             commentId.update(requestDto);
-            return new CommentResponseDto(commentId, username);
+            return new CommentResponseDto(commentId);
         } else {
             throw new CustomException(CustomErrorCode.NOT_THE_AUTHOR);  //작성자 확인 에러메세지
         }
@@ -55,10 +56,10 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long id, HttpServletRequest request) {
-        String username = memberService.tokenChk(request).getUsername(); //토큰의 저장된 사용자의 이름 찾기.
-        Board boardId = findAndCheck(id);   //게시물이 있는지 탐색
+        Member members = memberService.tokenChk(request); //토큰의 저장된 사용자 찾기.
+//        Board boardId = findAndCheck(id);   //게시물이 있는지 탐색
         Comment commentId = findCommentId(id);
-        if(commentId.getBoard().getMember().getUsername().equals(username)) {
+        if(commentId.getBoard().getMember().getUsername().equals(members.getUsername()) || members.getAuth().equals(AuthEnum.ADMIN)) {
             //댓글작성자의 이름이 토큰에 저장된 사용자가 맞으면 -> 삭제 진행.
             commentRepository.delete(commentId); //위 검증절차 후 댓글 삭제
         } else {

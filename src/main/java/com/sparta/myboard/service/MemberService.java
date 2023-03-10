@@ -31,13 +31,13 @@ public class MemberService {
     public void signUp(SignUpRequestDto signUpRequestDto) {
         Optional<Member> found = memberRepository.findByUsername(signUpRequestDto.getUsername());
         if (found.isPresent()) {
-            throw new CustomException(CustomErrorCode.ALREADY_USED_ID);  //수정4번
+            throw new CustomException(CustomErrorCode.ALREADY_USED_ID);  //중복된 아이디 에러
         }
 
         AuthEnum auth = AuthEnum.USER;
         if (signUpRequestDto.isAdmin()) {  //RequestDto의 admin = false 일 때 실행.
             if (!signUpRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
-                throw new CustomException(CustomErrorCode.NOT_MATCHED_ADMINTOKEN);
+                throw new CustomException(CustomErrorCode.NOT_MATCHED_ADMINTOKEN);  //관리자 암호 불일치 에러
             } else {
                 auth = AuthEnum.ADMIN;
             }
@@ -50,9 +50,9 @@ public class MemberService {
     @Transactional(readOnly = true)
     public void login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         Member member = memberRepository.findByUsername(loginRequestDto.getUsername()).orElseThrow(
-                () -> new CustomException(CustomErrorCode.NOT_FOUND_MEMBER));
+                () -> new CustomException(CustomErrorCode.NOT_FOUND_MEMBER));   //회원정보 없음 에러
         if (!member.getPassword().equals(loginRequestDto.getPassword())) {
-            throw  new CustomException(CustomErrorCode.NOT_MATCHED_PASSWORD);
+            throw  new CustomException(CustomErrorCode.NOT_MATCHED_PASSWORD);   //비밀번호 오류 에러
         }
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(member.getUsername(), member.getAuth()));
     }
@@ -77,12 +77,12 @@ public class MemberService {
         String token = jwtUtil.resolveToken(request);
 
         if (token == null || !jwtUtil.validateToken(token)) {
-            throw new CustomException(CustomErrorCode.NOT_VALID_TOKEN);
+            throw new CustomException(CustomErrorCode.NOT_VALID_TOKEN); //유효하지 않은 토큰 에러
         }
 
         Claims claims = jwtUtil.getUserInfoFromToken(token);
 
         return memberRepository.findByUsername(claims.getSubject()).orElseThrow(
-                () -> new CustomException(CustomErrorCode.NOT_FOUND_MEMBER));
+                () -> new CustomException(CustomErrorCode.NOT_FOUND_MEMBER));   //회원정보 없음 에러
     }
 }
