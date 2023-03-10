@@ -1,34 +1,36 @@
 package com.sparta.myboard.dto;
 
 import com.sparta.myboard.entity.Board;
+import com.sparta.myboard.entity.Comment;
 import lombok.Data;
-import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class BoardResponseDto {
-    private final Board board;
+    private final Long id;
+    private final String title;
+    private final String contents;
+    private final String username;
+    private final LocalDateTime createAt;
+    private final LocalDateTime modifiedAt;
+    private final List<CommentResponseDto> commentList = new ArrayList<>();
 
     public BoardResponseDto(Board board) {
-        this.board = board;
+        this.id = board.getId();
+        this.title = board.getTitle();
+        this.contents = board.getContents();
+        this.username = board.getMember().getUsername();
+        this.createAt = board.getCreatedAt();
+        this.modifiedAt = board.getModifiedAt();
+
+        for(Comment comment : board.getComments()) {
+            commentList.add(new CommentResponseDto(comment));
+        }
+
     }
-    //    private final Long id;
-//    private final String title;
-//    private final String contents;
-//    private final String username;
-//    private final LocalDateTime createAt;
-//    private final LocalDateTime modifiedAt;
-//
-//    public BoardResponseDto(Board board) {
-//        this.id = board.getId();
-//        this.title = board.getTitle();
-//        this.contents = board.getContents();
-//        this.username = board.getMember().getUsername();
-//        this.createAt = board.getCreatedAt();
-//        this.modifiedAt = board.getModifiedAt();
-//
-//    }
 }
 /*
 유저네임을 board.getMember().getUsername() 이렇게 불러올 수 있는 이유 :

@@ -1,5 +1,7 @@
 package com.sparta.myboard.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.sparta.myboard.dto.BoardRequestDto;
 import com.sparta.myboard.dto.BoardUpdateRequestDto;
 import lombok.Getter;
@@ -13,7 +15,7 @@ import java.util.List;
 
 @Getter
 @Entity
-//@Where(clause = "deleted_at IS NULL")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 @NoArgsConstructor
 public class Board extends Timestamped{
     @Id
@@ -34,11 +36,6 @@ public class Board extends Timestamped{
 
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
     List<Comment> comments = new ArrayList<>();
-
-//    public void setMember (Member member) {
-//        this.member = member;
-//    }
-
 
 //    public Board(BoardRequestDto requestDto, String username) {
 //        this.title = requestDto.getTitle();
