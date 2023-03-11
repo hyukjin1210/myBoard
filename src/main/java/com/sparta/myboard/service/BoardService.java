@@ -1,5 +1,6 @@
 package com.sparta.myboard.service;
 
+import com.sparta.myboard.controller.MemberController;
 import com.sparta.myboard.dto.BoardRequestDto;
 import com.sparta.myboard.dto.BoardResponseDto;
 import com.sparta.myboard.dto.BoardUpdateRequestDto;
@@ -24,7 +25,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardService {
     private final BoardRepository boardRepository;
-    private final MemberRepository memberRepository;
     private final MemberService memberService;
 
     @Transactional  //조인컬럼을 사용하는 경우
@@ -64,16 +64,13 @@ public class BoardService {
         Member members = memberService.tokenChk(request);
 
 //        if (board.getMember().getUsername().equals(username) || board.getMember().getAuth().equals(AuthEnum.ADMIN)) {
-        if (board.getMember().getUsername().equals(members.getUsername()) || members.getAuth().equals(AuthEnum.ADMIN)) {
+        if (!board.getMember().getUsername().equals(members.getUsername()) || members.getAuth().equals(AuthEnum.ADMIN)) {
             //게시물에 저장된 유저네임 = 토큰에 저장되어있는 유저네임 또는 토큰에 저장되어있는 유저의 권한 = admin인 경우
             board.update(boardUpdateRequestDto);
-            System.out.println(board.getMember().getUsername());
-            return new BoardResponseDto(board);
-
-        } else {
             throw new CustomException(CustomErrorCode.REQUIRED_LOGIN);
-        }
 
+        }
+        return new BoardResponseDto(board);
     }
 
     @Transactional
@@ -82,13 +79,10 @@ public class BoardService {
 
         Member members = memberService.tokenChk(request);
 
-        if (board.getMember().getUsername().equals(members.getUsername()) || members.getAuth().equals(AuthEnum.ADMIN)) {
-
-            boardRepository.deleteById(id);
-
-        } else {
+        if (!board.getMember().getUsername().equals(members.getUsername()) || members.getAuth().equals(AuthEnum.ADMIN)) {
             throw new CustomException(CustomErrorCode.REQUIRED_LOGIN);
         }
+        boardRepository.deleteById(id);
     }
 
     public Board findAndCheck(Long id) {

@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 public class CommentResponseDto {
     private final Long id;
     private final String content;
-    private final LocalDateTime createAt;
-    private final LocalDateTime modifiedAt;
+    private final String createAt;
+    private final String modifiedAt;
     private final String boardUsername;
 //    private final String commentUsername;
 
