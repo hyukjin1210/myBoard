@@ -29,16 +29,19 @@ public class CommentService {
     @Transactional
     public CommentResponseDto createComment(CommentRequestDto requestDto, Long id, HttpServletRequest request) {
         tokenChkOnly(request);    //토큰의 유효성 검사
+
         Board boardId = findAndCheck(id);   //게시물이 있는지 확인
 
         Comment comment = new Comment(requestDto, boardId); //보드의 데이터 전체 저장
+
         Comment save = commentRepository.save(comment);
+
         return new CommentResponseDto(save);
     }
     @Transactional
     public CommentResponseDto updateComment(CommentRequestDto requestDto, Long id, HttpServletRequest request) {
         Member members = memberService.tokenChk(request);
-//        Board boardId = findAndCheck(id);   //게시물이 있는지 탐색
+
         Comment commentId = commentRepository.findById(id).orElseThrow(
                 () -> new CustomException(CustomErrorCode.NOT_FOUND_COMMENT)); //댓글 없음 에러
         if(commentId.getBoard().getMember().getUsername().equals(members.getUsername()) || members.getAuth().equals(AuthEnum.ADMIN)) {
@@ -48,16 +51,11 @@ public class CommentService {
             throw new CustomException(CustomErrorCode.NOT_THE_AUTHOR);  //작성자 확인 에러메세지
         }
     }
-    /*
-    문제.
-    1. 토큰의 여부만 확인되면 현재는 누구나 다 수정 가능.
-    2. 누가 수정했는지 모름.
-    */
 
     @Transactional
     public void deleteComment(Long id, HttpServletRequest request) {
         Member members = memberService.tokenChk(request); //토큰의 저장된 사용자 찾기.
-//        Board boardId = findAndCheck(id);   //게시물이 있는지 탐색
+
         Comment commentId = findCommentId(id);
         if(commentId.getBoard().getMember().getUsername().equals(members.getUsername()) || members.getAuth().equals(AuthEnum.ADMIN)) {
             //댓글작성자의 이름이 토큰에 저장된 사용자가 맞으면 -> 삭제 진행.
@@ -65,6 +63,7 @@ public class CommentService {
         } else {
             throw new CustomException(CustomErrorCode.NOT_THE_AUTHOR);  //작성자 확인 에러메세지
         }
+//        throw 명시
     }
     /*
     요구사항

@@ -1,6 +1,8 @@
 package com.sparta.myboard.jwt;
 
 import com.sparta.myboard.entity.AuthEnum;
+import com.sparta.myboard.status.CustomErrorCode;
+import com.sparta.myboard.status.CustomException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
@@ -29,7 +31,7 @@ public class JwtUtil {
     @Value("${jwt.secret.key}")
     private String secretKey;
     private Key key;
-    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256; //알고리즘 타입을 정하는 것이며 전부 다 지원되는거라 골라쓰면 됨.
+    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     @PostConstruct
     public void init() {
@@ -47,7 +49,7 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public String createToken(String username, AuthEnum auth) {  //추측. 파라미터로 받은 값에 한해서만 payload 생성이 가능하다.
+    public String createToken(String username, AuthEnum auth) {
         Date date = new Date();
 
         return BEARER_PREFIX +

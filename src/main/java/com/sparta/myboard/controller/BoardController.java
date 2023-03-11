@@ -3,10 +3,12 @@ package com.sparta.myboard.controller;
 import com.sparta.myboard.dto.BoardRequestDto;
 import com.sparta.myboard.dto.BoardResponseDto;
 import com.sparta.myboard.dto.BoardUpdateRequestDto;
+import com.sparta.myboard.entity.Member;
+import com.sparta.myboard.jwt.JwtUtil;
+import com.sparta.myboard.repository.MemberRepository;
 import com.sparta.myboard.service.BoardService;
-import com.sparta.myboard.status.Response;
-import com.sparta.myboard.status.ResponseMessage;
-import com.sparta.myboard.status.StatusCode;
+import com.sparta.myboard.status.*;
+import io.jsonwebtoken.Claims;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +28,13 @@ import java.util.List;
 @RequestMapping("/api/boards")
 public class BoardController {
     private final BoardService boardService;
+    private final JwtUtil jwtUtil;
+    private final MemberRepository memberRepository;
+
     @ApiOperation(value="게시물 작성", notes="게시물 작성(토큰검사, 유효성검사)")
     @PostMapping("/create")
     public BoardResponseDto createBoard(@Valid @RequestBody BoardRequestDto requestDto, HttpServletRequest request) {
+//        tokenChkOnly(request); //토큰체크를 컨트롤러에서 한다해도 서비스간의 연관관계를 끊을 방법이 없음.
         return boardService.createBoard(requestDto, request);
     }
 
@@ -59,6 +65,14 @@ public class BoardController {
         return new ResponseEntity(new Response(StatusCode.OK,
                 ResponseMessage.DELETE_BOARD), HttpStatus.OK);
     }
+
+//    public void tokenChkOnly(HttpServletRequest request) {
+//        String token = jwtUtil.resolveToken(request);
+//
+//        if (token == null || !jwtUtil.validateToken(token)) {
+//            throw new CustomException(CustomErrorCode.NOT_VALID_TOKEN); //유효하지 않은 토큰 에러
+//        }
+//    }
 
 }
 

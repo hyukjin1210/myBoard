@@ -36,7 +36,8 @@ public class MemberService {
 
         AuthEnum auth = AuthEnum.USER;
         if (signUpRequestDto.isAdmin()) {  //RequestDto의 admin = false 일 때 실행.
-            if (!signUpRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
+//            if (!signUpRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
+            if (!ADMIN_TOKEN.equals(signUpRequestDto.getAdminToken())) {
                 throw new CustomException(CustomErrorCode.NOT_MATCHED_ADMINTOKEN);  //관리자 암호 불일치 에러
             } else {
                 auth = AuthEnum.ADMIN;

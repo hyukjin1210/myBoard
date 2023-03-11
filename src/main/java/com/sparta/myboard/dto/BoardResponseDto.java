@@ -14,8 +14,8 @@ public class BoardResponseDto {
     private final String title;
     private final String contents;
     private final String username;
-    private final LocalDateTime createAt;
-    private final LocalDateTime modifiedAt;
+    private final String createAt;
+    private final String modifiedAt;
     private final List<CommentResponseDto> commentList = new ArrayList<>();
 
     public BoardResponseDto(Board board) {
