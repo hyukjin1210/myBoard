@@ -1,6 +1,8 @@
 package com.sparta.myboard.dto;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

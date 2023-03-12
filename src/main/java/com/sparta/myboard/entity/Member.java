@@ -3,8 +3,8 @@ package com.sparta.myboard.entity;
 import com.sparta.myboard.dto.SignUpRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,8 @@ public class Member {
     private String password;
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private AuthEnum auth;
+    private UserRoleEnum role;
+
 
     // Member 와 Board 의 관계 = 1 : N
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
@@ -34,13 +35,16 @@ public class Member {
     // 조인컬럼이 없으면 중간테이블을 jpa가 만들어서 원하는 조회가 안된다.
     List<Board> boards = new ArrayList<>();
 
-    public Member(SignUpRequestDto memberRequestDto, AuthEnum auth) {
+    public Member(SignUpRequestDto memberRequestDto, UserRoleEnum role) {
         this.username = memberRequestDto.getUsername();
         this.email = memberRequestDto.getEmail();
         this.password = memberRequestDto.getPassword();
-        this.auth = auth;
+        this.role = role;
     }
 
+    public void hashPassword(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(this.password);
+    }
 }
 /*
 mappedBy로 연관관계의 주인을 정해주어야 한다.
