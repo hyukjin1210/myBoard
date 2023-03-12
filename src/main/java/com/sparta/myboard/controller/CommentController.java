@@ -22,8 +22,8 @@ public class CommentController {
 
     @PostMapping("/comment/{id}")
     public CommentResponseDto createComment(@RequestBody CommentRequestDto requestDto,
-                                         @PathVariable Long id,
-                                         HttpServletRequest request) {
+                                            @PathVariable Long id,
+                                            HttpServletRequest request) {
         return commentService.createComment(requestDto, id, request);
     }
 
@@ -31,7 +31,7 @@ public class CommentController {
     public CommentResponseDto updateComment(@RequestBody CommentRequestDto requestDto,
                                             @PathVariable Long id,
                                             HttpServletRequest request) {
-    return commentService.updateComment(requestDto, id, request);
+        return commentService.updateComment(requestDto, id, request);
     }
 
     @DeleteMapping("/comment/{id}")

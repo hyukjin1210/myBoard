@@ -1,14 +1,16 @@
 package com.sparta.myboard.jwt;
 
-import com.sparta.myboard.entity.AuthEnum;
-import com.sparta.myboard.status.CustomErrorCode;
-import com.sparta.myboard.status.CustomException;
+import com.sparta.myboard.entity.UserRoleEnum;
+import com.sparta.myboard.security.MemberDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -24,9 +26,10 @@ import java.util.Date;
 public class JwtUtil {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";  //Header 값
-    public static final String AUTHORIZATION_KEY = "auth";  // 사용자 권한 값의 KEY
+    public static final String AUTHORIZATION_KEY = "role";  // 사용자 권한 값의 KEY
     public static final String BEARER_PREFIX = "Bearer ";
     private static final long TOKEN_TIME = 60 * 60 * 1000L; // 토큰 만료시간
+    private final MemberDetailsServiceImpl memberDetailsService;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -49,13 +52,13 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public String createToken(String username, AuthEnum auth) {
+    public String createToken(String username, UserRoleEnum role) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(username)
-                        .claim(AUTHORIZATION_KEY, auth)
+                        .claim(AUTHORIZATION_KEY, role)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)
@@ -83,10 +86,21 @@ public class JwtUtil {
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
-    // JWT 토큰에서 인증 정보 조회
-//    public Authentication getAuthentication(String token) {
-//        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
-//        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-//    }
 
+    // 인증 객체 생성
+    public Authentication createAuthentication(String username) {
+        UserDetails userDetails = memberDetailsService.loadUserByUsername(username);
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    }
+
+
+
+
+//    미완성.
+//    public Claims loadToken (HttpServletRequest request) {
+//        String token = resolveToken(request);
+//        validateToken(token);
+//        Claims claims = getUserInfoFromToken(token);
+//        return claims;
+//    }
 }

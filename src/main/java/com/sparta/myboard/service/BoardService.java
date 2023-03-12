@@ -1,18 +1,14 @@
 package com.sparta.myboard.service;
 
-import com.sparta.myboard.controller.MemberController;
 import com.sparta.myboard.dto.BoardRequestDto;
 import com.sparta.myboard.dto.BoardResponseDto;
 import com.sparta.myboard.dto.BoardUpdateRequestDto;
-import com.sparta.myboard.entity.AuthEnum;
+import com.sparta.myboard.entity.UserRoleEnum;
 import com.sparta.myboard.entity.Board;
 import com.sparta.myboard.entity.Member;
-import com.sparta.myboard.jwt.JwtUtil;
 import com.sparta.myboard.repository.BoardRepository;
-import com.sparta.myboard.repository.MemberRepository;
 import com.sparta.myboard.status.CustomErrorCode;
 import com.sparta.myboard.status.CustomException;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +32,22 @@ public class BoardService {
 
         return new BoardResponseDto(save);
     }
+
+//    public BoardResponseDto createBoard(BoardRequestDto requestDto, Claims claims) {
+//
+//        Board board = new Board(requestDto, claims);
+//        /*
+//        이렇게 claims를 넘기려면 몇가지 수정사항이 있다.
+//        1. Board엔티티에서의 Board생성자 수정
+//        2. Board생성자를 수정함에 따라 연관관계를 맺어둔 Member와의 관계에 대해서 다시 생각해봐야 함.
+//        만약 멤버와의 연관관계를 끊어주고 이런 형태로 사용이 가능하다면,
+//        토큰에 대한 검증은 컨트롤러에서 끝내고 서비스로직은 조금 더 책임이 낮아진다.
+//
+//        */
+//        Board save = boardRepository.saveAndFlush(board);
+//
+//        return new BoardResponseDto(save);
+//    }
 
     @Transactional(readOnly = true)
     public BoardResponseDto getBoard(Long id) {
@@ -64,7 +76,7 @@ public class BoardService {
         Member members = memberService.tokenChk(request);
 
 //        if (board.getMember().getUsername().equals(username) || board.getMember().getAuth().equals(AuthEnum.ADMIN)) {
-        if (!board.getMember().getUsername().equals(members.getUsername()) || members.getAuth().equals(AuthEnum.ADMIN)) {
+        if (!board.getMember().getUsername().equals(members.getUsername()) || members.getRole().equals(UserRoleEnum.ADMIN)) {
             //게시물에 저장된 유저네임 = 토큰에 저장되어있는 유저네임 또는 토큰에 저장되어있는 유저의 권한 = admin인 경우
             board.update(boardUpdateRequestDto);
             throw new CustomException(CustomErrorCode.REQUIRED_LOGIN);
@@ -79,7 +91,7 @@ public class BoardService {
 
         Member members = memberService.tokenChk(request);
 
-        if (!board.getMember().getUsername().equals(members.getUsername()) || members.getAuth().equals(AuthEnum.ADMIN)) {
+        if (!board.getMember().getUsername().equals(members.getUsername()) || members.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new CustomException(CustomErrorCode.REQUIRED_LOGIN);
         }
         boardRepository.deleteById(id);

@@ -2,7 +2,7 @@ package com.sparta.myboard.service;
 
 import com.sparta.myboard.dto.CommentRequestDto;
 import com.sparta.myboard.dto.CommentResponseDto;
-import com.sparta.myboard.entity.AuthEnum;
+import com.sparta.myboard.entity.UserRoleEnum;
 import com.sparta.myboard.entity.Board;
 import com.sparta.myboard.entity.Comment;
 import com.sparta.myboard.entity.Member;
@@ -11,7 +11,6 @@ import com.sparta.myboard.repository.BoardRepository;
 import com.sparta.myboard.repository.CommentRepository;
 import com.sparta.myboard.status.CustomErrorCode;
 import com.sparta.myboard.status.CustomException;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +43,7 @@ public class CommentService {
 
         Comment commentId = commentRepository.findById(id).orElseThrow(
                 () -> new CustomException(CustomErrorCode.NOT_FOUND_COMMENT)); //댓글 없음 에러
-        if(commentId.getBoard().getMember().getUsername().equals(members.getUsername()) || members.getAuth().equals(AuthEnum.ADMIN)) {
+        if(commentId.getBoard().getMember().getUsername().equals(members.getUsername()) || members.getRole().equals(UserRoleEnum.ADMIN)) {
             commentId.update(requestDto);
             return new CommentResponseDto(commentId);
         } else {
@@ -57,7 +56,7 @@ public class CommentService {
         Member members = memberService.tokenChk(request); //토큰의 저장된 사용자 찾기.
 
         Comment commentId = findCommentId(id);
-        if(commentId.getBoard().getMember().getUsername().equals(members.getUsername()) || members.getAuth().equals(AuthEnum.ADMIN)) {
+        if(commentId.getBoard().getMember().getUsername().equals(members.getUsername()) || members.getRole().equals(UserRoleEnum.ADMIN)) {
             //댓글작성자의 이름이 토큰에 저장된 사용자가 맞으면 -> 삭제 진행.
             commentRepository.delete(commentId); //위 검증절차 후 댓글 삭제
         } else {

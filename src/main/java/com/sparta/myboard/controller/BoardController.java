@@ -38,6 +38,12 @@ public class BoardController {
         return boardService.createBoard(requestDto, request);
     }
 
+//    @PostMapping("/create")
+//    public BoardResponseDto createBoard(@Valid @RequestBody BoardRequestDto requestDto, HttpServletRequest request) {
+//        Claims claims = jwtUtil.loadToken(request);
+//        return boardService.createBoard(requestDto, claims);
+//    }
+
     @ApiOperation(value="게시물 전체 조회", notes="게시물 전체 조회")
     @GetMapping("/boardList")
     public List<BoardResponseDto> boardList() {
