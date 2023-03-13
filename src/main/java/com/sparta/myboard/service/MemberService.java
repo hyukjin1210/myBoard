@@ -9,15 +9,12 @@ import com.sparta.myboard.jwt.JwtUtil;
 import com.sparta.myboard.repository.MemberRepository;
 import com.sparta.myboard.status.CustomErrorCode;
 import com.sparta.myboard.status.CustomException;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,10 +33,8 @@ public class MemberService {
             throw new CustomException(CustomErrorCode.ALREADY_USED_ID);  //중복된 아이디 에러
         }
 
-//        signUpRequestDto.getPassword() = passwordEncoder.encode(signUpRequestDto.getPassword());
         UserRoleEnum role = UserRoleEnum.USER;
-        if (signUpRequestDto.isAdmin()) {  //RequestDto의 admin = false 일 때 실행.
-//            if (!signUpRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
+        if (signUpRequestDto.isAdmin()) {  //RequestDto의 admin = true 일 때 실행.
             if (!ADMIN_TOKEN.equals(signUpRequestDto.getAdminToken())) {
                 throw new CustomException(CustomErrorCode.NOT_MATCHED_ADMINTOKEN);  //관리자 암호 불일치 에러
             } else {
@@ -47,9 +42,7 @@ public class MemberService {
             }
         }
         Member member = new Member(signUpRequestDto, role);
-//        member.getPassword() = passwordEncoder.encode(signUpRequestDto.getPassword());
-//        이렇게는 안되네
-        member.hashPassword(passwordEncoder);
+        member.hashPassword(passwordEncoder);   //Member 에 저장한 비밀번호의 암호화 진행.
         Member save = memberRepository.save(member);
         new MemberResponseDto(save);
     }
@@ -64,32 +57,9 @@ public class MemberService {
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(member.getUsername(), member.getRole()));
     }
 
-    @Transactional
-    public MemberResponseDto getMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(
-                () -> new CustomException(CustomErrorCode.NOT_FOUND_MEMBER));
-        return new MemberResponseDto(member);
-
+    public Member findMember (String username) {// claims를 이용해 멤버를 찾기 위한 메서드
+        return memberRepository.findByUsername(username).orElseThrow(
+                () -> new CustomException(CustomErrorCode.NOT_FOUND_MEMBER));   //회원 정보 없음 에러
     }
 
-    @Transactional
-    public List<MemberResponseDto> getMemberList() {
-        List<Member> members = memberRepository.findAll();
-
-        return members.stream()
-                .map(member -> new MemberResponseDto(member)).toList();
-    }
-
-    public Member tokenChk(HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-
-        if (token == null || !jwtUtil.validateToken(token)) {
-            throw new CustomException(CustomErrorCode.NOT_VALID_TOKEN); //유효하지 않은 토큰 에러
-        }
-
-        Claims claims = jwtUtil.getUserInfoFromToken(token);
-
-        return memberRepository.findByUsername(claims.getSubject()).orElseThrow(
-                () -> new CustomException(CustomErrorCode.NOT_FOUND_MEMBER));   //회원정보 없음 에러
-    }
 }
