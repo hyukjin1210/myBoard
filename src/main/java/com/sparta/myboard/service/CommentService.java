@@ -6,30 +6,25 @@ import com.sparta.myboard.entity.UserRoleEnum;
 import com.sparta.myboard.entity.Board;
 import com.sparta.myboard.entity.Comment;
 import com.sparta.myboard.entity.Member;
-import com.sparta.myboard.jwt.JwtUtil;
-import com.sparta.myboard.repository.BoardRepository;
 import com.sparta.myboard.repository.CommentRepository;
 import com.sparta.myboard.status.CustomErrorCode;
 import com.sparta.myboard.status.CustomException;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Service
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final BoardRepository boardRepository;
     private final MemberService memberService;
-    private final JwtUtil jwtUtil;
-//    private final BoardService boardService;
-    @Transactional
-    public CommentResponseDto createComment(CommentRequestDto requestDto, Long id, HttpServletRequest request) {
-        tokenChkOnly(request);    //토큰의 유효성 검사
+    private final BoardService boardService;
 
-        Board boardId = findAndCheck(id);   //게시물이 있는지 확인
+    @Transactional
+    public CommentResponseDto createComment(CommentRequestDto requestDto, Long id, Claims claims) {
+
+        Board boardId = boardService.findBoard(id);   //게시물이 있는지 확인
 
         Comment comment = new Comment(requestDto, boardId); //보드의 데이터 전체 저장
 
@@ -38,11 +33,10 @@ public class CommentService {
         return new CommentResponseDto(save);
     }
     @Transactional
-    public CommentResponseDto updateComment(CommentRequestDto requestDto, Long id, HttpServletRequest request) {
-        Member members = memberService.tokenChk(request);
+    public CommentResponseDto updateComment(CommentRequestDto requestDto, Long id, Claims claims) {
+        Member members = memberService.findMember(claims.getSubject());
 
-        Comment commentId = commentRepository.findById(id).orElseThrow(
-                () -> new CustomException(CustomErrorCode.NOT_FOUND_COMMENT)); //댓글 없음 에러
+        Comment commentId = findCommentId(id); //댓글 없음 에러
         if(commentId.getBoard().getMember().getUsername().equals(members.getUsername()) || members.getRole().equals(UserRoleEnum.ADMIN)) {
             commentId.update(requestDto);
             return new CommentResponseDto(commentId);
@@ -52,8 +46,8 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long id, HttpServletRequest request) {
-        Member members = memberService.tokenChk(request); //토큰의 저장된 사용자 찾기.
+    public void deleteComment(Long id, Claims claims) {
+        Member members = memberService.findMember(claims.getSubject()); //토큰의 저장된 사용자 찾기.
 
         Comment commentId = findCommentId(id);
         if(commentId.getBoard().getMember().getUsername().equals(members.getUsername()) || members.getRole().equals(UserRoleEnum.ADMIN)) {
@@ -71,23 +65,9 @@ public class CommentService {
     3. 삭제 후 Cline로 성공했다는 메세지, 상태코드 반환.
     */
 
-    private Board findAndCheck(Long id) {   //게시글 유무 확인
-        return boardRepository.findById(id).orElseThrow(
-                () -> new CustomException(CustomErrorCode.NOT_FOUND_BOARD));
-
-    }
-
     private Comment findCommentId (Long id) {   //댓글 유무 확인
         return commentRepository.findById(id).orElseThrow(
                 () -> new CustomException(CustomErrorCode.NOT_FOUND_COMMENT));
-    }
-
-    public void tokenChkOnly(HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-
-        if (token == null || !jwtUtil.validateToken(token)) {
-            throw new CustomException(CustomErrorCode.NOT_VALID_TOKEN); //유효하지 않은 토큰 에러
-        }
     }
 
 }

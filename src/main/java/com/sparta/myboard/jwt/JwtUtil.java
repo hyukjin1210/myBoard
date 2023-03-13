@@ -64,6 +64,10 @@ public class JwtUtil {
                         .signWith(key, signatureAlgorithm)
                         .compact();
     }
+    /*
+    왜 username으로 찾는거지
+    userId를 이용해서 찾아보는게 논리적으로 맞는것같다.
+    */
 
     // 토큰 검증
     public boolean validateToken(String token) {
@@ -97,10 +101,9 @@ public class JwtUtil {
 
 
 //    미완성.
-//    public Claims loadToken (HttpServletRequest request) {
-//        String token = resolveToken(request);
-//        validateToken(token);
-//        Claims claims = getUserInfoFromToken(token);
-//        return claims;
-//    }
+    public Claims loadToken (HttpServletRequest request) {
+        String token = resolveToken(request);
+        validateToken(token);
+        return getUserInfoFromToken(token);
+    }
 }
