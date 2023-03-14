@@ -27,6 +27,7 @@ public class Comment extends Timestamped{
 
 
     public Comment(CommentRequestDto commentDto, Board board) {
+        this.id = commentDto.getBoardId();
         this.content = commentDto.getContent();
         this.board = board;
     }

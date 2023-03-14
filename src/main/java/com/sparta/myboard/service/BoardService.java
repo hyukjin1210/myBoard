@@ -32,15 +32,26 @@ public class BoardService {
 //        return new BoardResponseDto(save);
 //    }
     @Transactional
-    public BoardResponseDto createBoard(BoardRequestDto requestDto, Claims claims) {
+    public BoardResponseDto createBoard(BoardRequestDto requestDto, Member member) {
         // 토큰에 저장된 정보로 유저찾기
-        Member members = memberService.findMember(claims.getSubject());
+//        Member members = memberService.findMember(member.getUsername());
         // 보드 생성
-        Board board = new Board(requestDto, members);
+        Board board = new Board(requestDto, member);
         // 레파지토리(DB)에 저장
         Board save = boardRepository.saveAndFlush(board);
         return new BoardResponseDto(save);
     }
+
+//    @Transactional
+//    public BoardResponseDto createBoard(BoardRequestDto requestDto, Claims claims) {
+//        // 토큰에 저장된 정보로 유저찾기
+//        Member members = memberService.findMember(claims.getSubject());
+//        // 보드 생성
+//        Board board = new Board(requestDto, members);
+//        // 레파지토리(DB)에 저장
+//        Board save = boardRepository.saveAndFlush(board);
+//        return new BoardResponseDto(save);
+//    }
     /*
         보드를 생성할 때 claims를 넘기려면 몇가지 수정사항이 있다.
         1. Board엔티티에서의 Board생성자 수정
@@ -69,31 +80,30 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardResponseDto updateBoard(Long id, BoardUpdateRequestDto boardUpdateRequestDto, Claims claims) {
+    public BoardResponseDto updateBoard(Long id, BoardUpdateRequestDto boardUpdateRequestDto, Member member) {
         // 게시물 찾기
         Board board = findBoard(id);
         // 토큰에 저장된 정보로 유저찾기
-        Member members = memberService.findMember(claims.getSubject());
+        Member members = memberService.findMember(member.getUsername());
         /*
         게시물 수정 요구사항.
         1. 사용자(토큰을 발급받은 유저)와 작성자의 이름이 일치할 경우 수정가능
         2. 유저의 권한이 admin(관리자)인 경우 수정가능
         */
         if (!board.getMember().getUsername().equals(members.getUsername()) || members.getRole().equals(UserRoleEnum.ADMIN)) {
-            board.update(boardUpdateRequestDto);
             throw new CustomException(CustomErrorCode.REQUIRED_LOGIN);
-
         }
+        board.update(boardUpdateRequestDto);
         return new BoardResponseDto(board);
     }
 
     @Transactional
-    public void deleteBoard(Long id, Claims claims) {
+    public void deleteBoard(Long id, Member member) {
         // 게시물 찾기
         Board board = findBoard(id);
         // 토큰에 저장된 정보로 유저찾기
-        Member members = memberService.findMember(claims.getSubject());
-//        관리자 삭제 안됨 이유?
+        Member members = memberService.findMember(member.getUsername());
+
         if (!board.getMember().getUsername().equals(members.getUsername()) || members.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new CustomException(CustomErrorCode.NOT_THE_AUTHOR);
         }
