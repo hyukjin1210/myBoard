@@ -2,14 +2,14 @@ package com.sparta.myboard.security;
 
 import com.sparta.myboard.entity.Member;
 import com.sparta.myboard.entity.UserRoleEnum;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-@Getter
+
+
 public class MemberDetailsImpl implements UserDetails {
     private final Member member;
     private final String username;
@@ -17,6 +17,10 @@ public class MemberDetailsImpl implements UserDetails {
     public MemberDetailsImpl(Member member, String username) {
         this.member = member;
         this.username = username;
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     @Override
@@ -32,12 +36,12 @@ public class MemberDetailsImpl implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return null;
+    public String getUsername() {
+        return this.username;
     }
 
     @Override
-    public String getUsername() {
+    public String getPassword() {
         return null;
     }
 

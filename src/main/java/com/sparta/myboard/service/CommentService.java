@@ -22,9 +22,9 @@ public class CommentService {
     private final BoardService boardService;
 
     @Transactional
-    public CommentResponseDto createComment(CommentRequestDto requestDto, Long id, Claims claims) {
+    public CommentResponseDto createComment(CommentRequestDto requestDto,  Claims claims) {
 
-        Board boardId = boardService.findBoard(id);   //게시물이 있는지 확인
+        Board boardId = boardService.findBoard(requestDto.getBoardId());   //게시물이 있는지 확인
 
         Comment comment = new Comment(requestDto, boardId); //보드의 데이터 전체 저장
 
@@ -37,11 +37,11 @@ public class CommentService {
         Member members = memberService.findMember(claims.getSubject());
 
         Comment commentId = findCommentId(id); //댓글 없음 에러
-        if(commentId.getBoard().getMember().getUsername().equals(members.getUsername()) || members.getRole().equals(UserRoleEnum.ADMIN)) {
+        if(!commentId.getBoard().getMember().getUsername().equals(members.getUsername()) || members.getRole().equals(UserRoleEnum.ADMIN)) {
+            throw new CustomException(CustomErrorCode.NOT_THE_AUTHOR);  //작성자 확인 에러메세지
+        } else {
             commentId.update(requestDto);
             return new CommentResponseDto(commentId);
-        } else {
-            throw new CustomException(CustomErrorCode.NOT_THE_AUTHOR);  //작성자 확인 에러메세지
         }
     }
 
@@ -50,11 +50,12 @@ public class CommentService {
         Member members = memberService.findMember(claims.getSubject()); //토큰의 저장된 사용자 찾기.
 
         Comment commentId = findCommentId(id);
-        if(commentId.getBoard().getMember().getUsername().equals(members.getUsername()) || members.getRole().equals(UserRoleEnum.ADMIN)) {
+        if(!commentId.getBoard().getMember().getUsername().equals(members.getUsername()) || members.getRole().equals(UserRoleEnum.ADMIN)) {
+            throw new CustomException(CustomErrorCode.NOT_THE_AUTHOR);  //작성자 확인 에러메세지
+
+        } else {
             //댓글작성자의 이름이 토큰에 저장된 사용자가 맞으면 -> 삭제 진행.
             commentRepository.delete(commentId); //위 검증절차 후 댓글 삭제
-        } else {
-            throw new CustomException(CustomErrorCode.NOT_THE_AUTHOR);  //작성자 확인 에러메세지
         }
 //        throw 명시
     }
