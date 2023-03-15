@@ -7,9 +7,9 @@ import com.sparta.myboard.entity.UserRoleEnum;
 import com.sparta.myboard.entity.Board;
 import com.sparta.myboard.entity.Member;
 import com.sparta.myboard.repository.BoardRepository;
+import com.sparta.myboard.repository.HeartRepository;
 import com.sparta.myboard.status.CustomErrorCode;
 import com.sparta.myboard.status.CustomException;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +21,7 @@ import java.util.List;
 public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberService memberService;
+    private final HeartRepository heartRepository;
 
 //    @Transactional  //조인컬럼을 사용하는 경우
 //    public BoardResponseDto createBoard(BoardRequestDto requestDto, HttpServletRequest request) {
@@ -63,8 +64,11 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public BoardResponseDto getBoard(Long id) {
-        return new BoardResponseDto(boardRepository.findById(id).orElseThrow(
-                () -> new CustomException(CustomErrorCode.NOT_FOUND_BOARD)));
+        int heartCount = heartRepository.countByBoardId(id);
+        Board board = boardRepository.findById(id).orElseThrow(
+                () -> new CustomException(CustomErrorCode.NOT_FOUND_BOARD));
+        return new BoardResponseDto(board, heartCount);
+
     }
 
     @Transactional(readOnly = true)
@@ -77,6 +81,11 @@ public class BoardService {
             ResponseList.add(boardResponseDto);
         }
         return ResponseList;
+    }
+
+    @Transactional
+    public int updateView (Long id) {
+        return boardRepository.updateView(id);
     }
 
     @Transactional
