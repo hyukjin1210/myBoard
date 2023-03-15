@@ -1,13 +1,11 @@
 package com.sparta.myboard.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.sparta.myboard.dto.BoardRequestDto;
 import com.sparta.myboard.dto.BoardUpdateRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,8 +13,8 @@ import java.util.List;
 
 @Getter
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 @NoArgsConstructor
+@DynamicInsert
 public class Board extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +26,12 @@ public class Board extends Timestamped{
     @Column(nullable = false)
     private String contents;
 
+    @ColumnDefault("0")
+    @Column(nullable = false)
+    private int viewCount;
+
+
+
 
     // Board 와 Member 의 관계 = N : 1
     @ManyToOne
@@ -36,6 +40,7 @@ public class Board extends Timestamped{
 
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
     List<Comment> comments = new ArrayList<>();
+
 
 //    public Board(BoardRequestDto requestDto, String username) {
 //        this.title = requestDto.getTitle();
@@ -46,6 +51,7 @@ public class Board extends Timestamped{
     public Board(BoardRequestDto requestDto, Member member) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
+        this.viewCount = 0;
         this.member = member;
     }
 
@@ -53,5 +59,9 @@ public class Board extends Timestamped{
         this.title = boardUpdateRequestDto.getTitle();
         this.contents = boardUpdateRequestDto.getContents();
     }
+
+//    public void viewCountUp (Board board) {
+//        board.viewCount++;
+//    }
 
 }

@@ -62,4 +62,8 @@ public class MemberService {
                 () -> new CustomException(CustomErrorCode.NOT_FOUND_MEMBER));   //회원 정보 없음 에러
     }
 
+    public Member findMemberId (Long id) {
+        return memberRepository.findById(id).orElseThrow(
+                () -> new CustomException(CustomErrorCode.NOT_FOUND_MEMBER));
+    }
 }

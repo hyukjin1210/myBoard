@@ -20,19 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity // 스프링 Security 지원을 가능하게 함
 @EnableGlobalMethodSecurity(securedEnabled = true) // @Secured 어노테이션 활성화
 public class WebSecurityConfig {
-    private static final String[] PERMIT_URL_ARRAY = {
-            /* swagger v2 */
-            "/v2/api-docs",
-            "/swagger-resources",
-            "/swagger-resources/**",
-            "/configuration/ui",
-            "/configuration/security",
-            "/swagger-ui.html",
-            "/webjars/**",
-            /* swagger v3 */
-            "/v3/api-docs/**",
-            "/swagger-ui/**"
-    };
 
     private final JwtUtil jwtUtil;
 
@@ -65,7 +52,8 @@ public class WebSecurityConfig {
 //                .antMatchers(HttpMethod.GET,"/api/boards/{id}").permitAll()
 //                .antMatchers(HttpMethod.GET,"/api/boards").permitAll()
                 .antMatchers("/api/boards/**").permitAll()
-                .antMatchers("/api/comment").permitAll()
+                .antMatchers("/api/comment/** ").permitAll()
+                .antMatchers("/api/heart/**").permitAll()
                 .anyRequest().authenticated()
                 .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 /*

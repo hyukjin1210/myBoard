@@ -14,9 +14,27 @@ public class BoardResponseDto {
     private final String title;
     private final String contents;
     private final String username;
+    private final Integer viewCount;
     private final String createAt;
     private final String modifiedAt;
+    private final int heartCount;
     private final List<CommentResponseDto> commentList = new ArrayList<>();
+
+    public BoardResponseDto(Board board, int heartCount) {
+        this.id = board.getId();
+        this.title = board.getTitle();
+        this.contents = board.getContents();
+        this.username = board.getMember().getUsername();
+        this.createAt = board.getCreatedAt();
+        this.modifiedAt = board.getModifiedAt();
+        this.viewCount = board.getViewCount();
+        this.heartCount = heartCount;
+
+        for(Comment comment : board.getComments()) {
+            commentList.add(new CommentResponseDto(comment));
+        }
+
+    }
 
     public BoardResponseDto(Board board) {
         this.id = board.getId();
@@ -25,6 +43,8 @@ public class BoardResponseDto {
         this.username = board.getMember().getUsername();
         this.createAt = board.getCreatedAt();
         this.modifiedAt = board.getModifiedAt();
+        this.viewCount = board.getViewCount();
+        this.heartCount = 0;
 
         for(Comment comment : board.getComments()) {
             commentList.add(new CommentResponseDto(comment));

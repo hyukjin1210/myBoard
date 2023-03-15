@@ -12,6 +12,8 @@ public enum CustomErrorCode {
     NOT_FOUND_COMMENT("댓글이 없습니다.", 400),
     NOT_THE_AUTHOR("작성자만 삭제/수정할 수 있습니다", 400),
     NOT_MATCHED_ADMINTOKEN("관리자 암호가 맞지 않습니다.", 400),
+    DUPLICATE_LIKE("좋아요는 중복이 불가능 합니다.", 400),
+    NOT_FOUND_HEART("좋아요가 없습니다.", 400),
     REQUIRED_LOGIN("로그인이 필요한 서비스 입니다.", 400);
 
 

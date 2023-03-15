@@ -26,7 +26,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardService boardService;
-    private final JwtUtil jwtUtil;
 
 //    @ApiOperation(value="게시물 작성", notes="게시물 작성(토큰검사)")
 //    @PostMapping("/api/boards")
@@ -56,6 +55,7 @@ public class BoardController {
 //    @ApiOperation(value="게시물 조회", notes="선택한 게시물 조회")
     @GetMapping("/api/boards/{id}")
     public BoardResponseDto getBoard(@PathVariable Long id) {
+        boardService.updateView(id);    //조회수 증가
         return boardService.getBoard(id);
     }
 
