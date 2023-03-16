@@ -1,9 +1,10 @@
 package com.sparta.myboard.dto;
 
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+@Data
 public class CommentRequestDto {
-    private long boardId;
     private String content;
+
 }

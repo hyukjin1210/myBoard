@@ -7,6 +7,7 @@ import com.sparta.myboard.entity.Board;
 import com.sparta.myboard.entity.Comment;
 import com.sparta.myboard.entity.Member;
 import com.sparta.myboard.repository.CommentRepository;
+import com.sparta.myboard.security.MemberDetailsImpl;
 import com.sparta.myboard.status.CustomErrorCode;
 import com.sparta.myboard.status.CustomException;
 import io.jsonwebtoken.Claims;
@@ -22,22 +23,41 @@ public class CommentService {
     private final BoardService boardService;
 
     @Transactional
-    public CommentResponseDto createComment(CommentRequestDto requestDto,  Claims claims) {
+    public CommentResponseDto createComment(CommentRequestDto requestDto, Long id, Member member) {
+        Board board = boardService.findBoard(id);   //게시물이 있는지 확인
+        Comment comment = new Comment(requestDto, member);
+        commentRepository.save(comment);
 
-        Board boardId = boardService.findBoard(requestDto.getBoardId());   //게시물이 있는지 확인
+        board.getComments().add(comment);
 
-        Comment comment = new Comment(requestDto, boardId); //보드의 데이터 전체 저장
-
-        Comment save = commentRepository.save(comment);
-
-        return new CommentResponseDto(save);
+        return new CommentResponseDto(comment);
     }
+
+    @Transactional
+    public CommentResponseDto createChild(Long id, Long parentId, CommentRequestDto requestDto, Member member) {
+        Board board = boardService.findBoard(id);
+        Comment parentComment = null;   //최초 생성시 null.
+        if (parentId != null) { //부모댓글이  null이 아닐경우.
+            parentComment = commentRepository.findById(parentId).orElseThrow(
+                    () -> new CustomException(CustomErrorCode.NOT_FOUND_COMMENT));
+        }
+        //오버로딩한 생성자 사용
+        Comment childComment = new Comment(requestDto, member, parentComment);  //대댓글 저장.
+        commentRepository.save(childComment);   //대댓글 저장
+        
+        if(parentComment != null) {
+            parentComment.getChildren().add(childComment);
+            commentRepository.save(parentComment);
+        }
+        return new CommentResponseDto(childComment);
+    }
+
     @Transactional
     public CommentResponseDto updateComment(CommentRequestDto requestDto, Long id, Claims claims) {
         Member members = memberService.findMember(claims.getSubject());
 
         Comment commentId = findCommentId(id); //댓글 없음 에러
-        if(!commentId.getBoard().getMember().getUsername().equals(members.getUsername()) || members.getRole().equals(UserRoleEnum.ADMIN)) {
+        if(!commentId.getMember().getUsername().equals(members.getUsername()) || members.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new CustomException(CustomErrorCode.NOT_THE_AUTHOR);  //작성자 확인 에러메세지
         } else {
             commentId.update(requestDto);
@@ -50,7 +70,7 @@ public class CommentService {
         Member members = memberService.findMember(claims.getSubject()); //토큰의 저장된 사용자 찾기.
 
         Comment commentId = findCommentId(id);
-        if(!commentId.getBoard().getMember().getUsername().equals(members.getUsername()) || members.getRole().equals(UserRoleEnum.ADMIN)) {
+        if(!commentId.getMember().getUsername().equals(members.getUsername()) || members.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new CustomException(CustomErrorCode.NOT_THE_AUTHOR);  //작성자 확인 에러메세지
 
         } else {

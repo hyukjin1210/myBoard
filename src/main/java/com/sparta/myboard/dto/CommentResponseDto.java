@@ -1,19 +1,22 @@
 package com.sparta.myboard.dto;
 
-import com.sparta.myboard.entity.Board;
+
 import com.sparta.myboard.entity.Comment;
-import lombok.Getter;
+import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-@Getter
+@Data
 public class CommentResponseDto {
     private final Long id;
     private final String content;
     private final String createAt;
     private final String modifiedAt;
-    private final String boardUsername;
-//    private final String commentUsername;
+    private final String commentUsername;
+
+    //리스트화 시켜서 붙힐 예정
+    private List<CommentResponseDto> comments = new ArrayList<>();
 
 
     public CommentResponseDto(Comment comment) {
@@ -21,8 +24,10 @@ public class CommentResponseDto {
         this.content = comment.getContent();
         this.createAt = comment.getCreatedAt();
         this.modifiedAt = comment.getModifiedAt();
-        this.boardUsername = comment.getBoard().getMember().getUsername();
+        this.commentUsername = comment.getMember().getUsername();
 
-
+        for (Comment child : comment.getChildren()) {
+            comments.add(new CommentResponseDto(child));
+        }
     }
 }
