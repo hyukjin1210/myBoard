@@ -38,7 +38,8 @@ public class Board extends Timestamped{
     @JoinColumn(name="MEMBER_ID")   //이게 FK의 역할
     private Member member;  // id 1개가 저장되는 것이다.
 
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "commemt_Id")
     List<Comment> comments = new ArrayList<>();
 
 
