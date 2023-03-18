@@ -33,7 +33,7 @@ public class WebSecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         // h2-console 사용 및 resources 접근 허용 설정
         return (web) -> web.ignoring()
-                .requestMatchers(PathRequest.toH2Console()) //배포를 하고나면 이걸 주석처리 해주어야 포스트맨을 사용할 수 있다.
+//                .requestMatchers(PathRequest.toH2Console()) //배포를 하고나면 이걸 주석처리 해주어야 포스트맨을 사용할 수 있다.
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
