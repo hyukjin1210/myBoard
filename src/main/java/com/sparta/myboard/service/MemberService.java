@@ -52,7 +52,7 @@ public class MemberService {
         Member member = memberRepository.findByUsername(loginRequestDto.getUsername()).orElseThrow(
                 () -> new CustomException(CustomErrorCode.NOT_FOUND_MEMBER));   //회원정보 없음 에러
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), member.getPassword())) {
-            throw  new CustomException(CustomErrorCode.NOT_MATCHED_PASSWORD);   //비밀번호 오류 에러
+            throw  new CustomException(CustomErrorCode.DUPLICATE_LIKE);   //비밀번호 오류 에러
         }
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(member.getUsername(), member.getRole()));
     }
