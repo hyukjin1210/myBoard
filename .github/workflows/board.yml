@@ -9,7 +9,7 @@ on:
 # 리전, 버킷 이름, CodeDeploy 앱 이름, CodeDeploy 배포 그룹 이름
 env:
   AWS_REGION: ap-northeast-2
-  S3_BUCKET_NAME: my-github-actions-s3-bucket
+  S3_BUCKET_NAME: my-github-actions-s3-bucket-testbyjoo
   CODE_DEPLOY_APPLICATION_NAME: my-codedeploy-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: my-codedeploy-deployment-group
 
@@ -27,12 +27,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # (2) JDK 11 세팅
-      - name: Set up JDK 11
+      # (2) JDK 17 세팅
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
 
       # (3) Gradle build (Test 제외)
       - name: Build with Gradle
@@ -40,14 +40,11 @@ jobs:
         with:
           arguments: clean build -x test
 
-      - name: Clear Gradle Cache
-        run: ./gradlew cleanBuildCache
-
       # (4) AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-access-key-id: ${{ secrets.AWS_SECRET_ACCESS_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
