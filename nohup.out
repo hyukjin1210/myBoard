@@ -1,0 +1,69 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.7.5)
+
+2023-03-20 00:38:42.544  INFO 30206 --- [           main] com.sparta.myboard.MyBoardApplication    : Starting MyBoardApplication using Java 17.0.6 on ip-172-31-9-78 with PID 30206 (/home/ubuntu/myBoard-0.0.1-SNAPSHOT.jar started by ubuntu in /home/ubuntu)
+2023-03-20 00:38:42.554  INFO 30206 --- [           main] com.sparta.myboard.MyBoardApplication    : No active profile set, falling back to 1 default profile: "default"
+2023-03-20 00:38:44.740  INFO 30206 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-03-20 00:38:44.929  INFO 30206 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 173 ms. Found 4 JPA repository interfaces.
+2023-03-20 00:38:46.643  INFO 30206 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-03-20 00:38:46.673  INFO 30206 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-03-20 00:38:46.673  INFO 30206 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.68]
+2023-03-20 00:38:46.845  INFO 30206 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-03-20 00:38:46.848  INFO 30206 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4141 ms
+2023-03-20 00:38:47.874  INFO 30206 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-03-20 00:38:48.001  INFO 30206 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.12.Final
+2023-03-20 00:38:48.508  INFO 30206 --- [           main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2023-03-20 00:38:48.746  INFO 30206 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-03-20 00:38:49.509  INFO 30206 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-03-20 00:38:49.577  INFO 30206 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2023-03-20 00:38:52.083  INFO 30206 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-03-20 00:38:52.101  INFO 30206 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-03-20 00:38:54.121  INFO 30206 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@32d5279, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1c067c0d, org.springframework.security.web.context.SecurityContextPersistenceFilter@3a3ed300, org.springframework.security.web.header.HeaderWriterFilter@158ae284, org.springframework.security.web.authentication.logout.LogoutFilter@6af90849, com.sparta.myboard.jwt.JwtAuthFilter@5d0b0cb9, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@39f5b723, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4eaa375c, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7f7b6639, org.springframework.security.web.session.SessionManagementFilter@497d4c96, org.springframework.security.web.access.ExceptionTranslationFilter@d48e998, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@3d24420b]
+2023-03-20 00:38:54.134  WARN 30206 --- [           main] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore org.springframework.boot.autoconfigure.security.servlet.StaticResourceRequest$StaticResourceRequestMatcher@769bd849. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2023-03-20 00:38:54.137  INFO 30206 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will not secure org.springframework.boot.autoconfigure.security.servlet.StaticResourceRequest$StaticResourceRequestMatcher@769bd849
+2023-03-20 00:38:54.310  WARN 30206 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-03-20 00:38:54.717  INFO 30206 --- [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2023-03-20 00:38:55.299  INFO 30206 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2023-03-20 00:38:55.328  INFO 30206 --- [           main] com.sparta.myboard.MyBoardApplication    : Started MyBoardApplication in 14.023 seconds (JVM running for 15.189)
+2023-03-20 00:39:02.600  INFO 30206 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-03-20 00:39:02.608  INFO 30206 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-03-20 00:39:02.624  INFO 30206 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.7.5)
+
+2023-03-20 00:43:28.418  INFO 30285 --- [           main] com.sparta.myboard.MyBoardApplication    : Starting MyBoardApplication using Java 17.0.6 on ip-172-31-9-78 with PID 30285 (/home/ubuntu/myBoard-0.0.1-SNAPSHOT.jar started by ubuntu in /home/ubuntu)
+2023-03-20 00:43:28.425  INFO 30285 --- [           main] com.sparta.myboard.MyBoardApplication    : No active profile set, falling back to 1 default profile: "default"
+2023-03-20 00:43:30.417  INFO 30285 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-03-20 00:43:30.597  INFO 30285 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 165 ms. Found 4 JPA repository interfaces.
+2023-03-20 00:43:32.247  INFO 30285 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-03-20 00:43:32.269  INFO 30285 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-03-20 00:43:32.269  INFO 30285 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.68]
+2023-03-20 00:43:32.440  INFO 30285 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-03-20 00:43:32.440  INFO 30285 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3864 ms
+2023-03-20 00:43:33.371  INFO 30285 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-03-20 00:43:33.485  INFO 30285 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.12.Final
+2023-03-20 00:43:33.924  INFO 30285 --- [           main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2023-03-20 00:43:34.151  INFO 30285 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-03-20 00:43:34.799  INFO 30285 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-03-20 00:43:34.870  INFO 30285 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2023-03-20 00:43:37.235  INFO 30285 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-03-20 00:43:37.256  INFO 30285 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-03-20 00:43:39.181  INFO 30285 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@5d94a2dc, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@cedee22, org.springframework.security.web.context.SecurityContextPersistenceFilter@68e02f33, org.springframework.security.web.header.HeaderWriterFilter@e784320, org.springframework.security.web.authentication.logout.LogoutFilter@4eaa375c, com.sparta.myboard.jwt.JwtAuthFilter@59b32539, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@d48e998, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7cfac39f, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5b47731f, org.springframework.security.web.session.SessionManagementFilter@7a9eccc4, org.springframework.security.web.access.ExceptionTranslationFilter@6968bcec, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@5a917723]
+2023-03-20 00:43:39.197  WARN 30285 --- [           main] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore org.springframework.boot.autoconfigure.security.servlet.StaticResourceRequest$StaticResourceRequestMatcher@4dde8976. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2023-03-20 00:43:39.198  INFO 30285 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will not secure org.springframework.boot.autoconfigure.security.servlet.StaticResourceRequest$StaticResourceRequestMatcher@4dde8976
+2023-03-20 00:43:39.424  WARN 30285 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-03-20 00:43:40.014  INFO 30285 --- [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2023-03-20 00:43:40.740  INFO 30285 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2023-03-20 00:43:40.769  INFO 30285 --- [           main] com.sparta.myboard.MyBoardApplication    : Started MyBoardApplication in 13.556 seconds (JVM running for 14.728)
