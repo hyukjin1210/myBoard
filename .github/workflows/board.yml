@@ -37,6 +37,7 @@ jobs:
     - name: Make zip file
       run: zip -r -qq -j ./springboot-intro-build.zip ./deploy      
       
+
       # Deploy
     - name: Deploy
       uses: aws-actions/configure-aws-credentials@v1
@@ -47,3 +48,4 @@ jobs:
 
     - name: Upload to S3
       run: aws s3 cp --region ap-northeast-2 --acl private ./myboard-post.zip s3://myboard-post/
+
