@@ -3,11 +3,9 @@ package com.sparta.myboard.controller;
 import com.sparta.myboard.dto.BoardRequestDto;
 import com.sparta.myboard.dto.BoardResponseDto;
 import com.sparta.myboard.dto.BoardUpdateRequestDto;
-import com.sparta.myboard.jwt.JwtUtil;
 import com.sparta.myboard.security.MemberDetailsImpl;
 import com.sparta.myboard.service.BoardService;
 import com.sparta.myboard.status.*;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,7 +14,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
