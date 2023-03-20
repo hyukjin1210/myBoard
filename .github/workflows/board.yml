@@ -37,7 +37,7 @@ jobs:
     - name: Make zip file
       run: zip -r -qq -j ./springboot-intro-build.zip ./deploy      
       
-      # Deploy
+# Deploy
     - name: Deploy
       uses: aws-actions/configure-aws-credentials@v1
       with:
