@@ -24,17 +24,6 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
 
-//    @ApiOperation(value="게시물 작성", notes="게시물 작성(토큰검사)")
-//    @PostMapping("/api/boards")
-//    public BoardResponseDto createBoard(@Valid @RequestBody BoardRequestDto requestDto, HttpServletRequest request) {
-//        return boardService.createBoard(requestDto, jwtUtil.loadToken(request));
-//        /*
-//        Claims claims = jwtUtil.loadToken(request);
-//        변수명을 선언해서 사용해도 되지만, 몇번 사용하지 않는 변수명은
-//        굳이 선언해서 사용하는 것이 아니라 바로 가져다 쓰기도 한다.
-//        뭐가 되었든 변수명을 선언하는 것 또한 메모리를 사용하는 것이기 때문이다.
-//        */
-//    }
 
 //    @ApiOperation(value="게시물 작성", notes="게시물 작성(토큰검사)")
     @PostMapping("/api/boards")
